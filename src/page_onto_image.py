@@ -1,6 +1,7 @@
 import argparse
 import xml.etree.ElementTree as ET
 from pathlib import Path
+import re
 
 from PIL import Image, ImageDraw
 
@@ -19,10 +20,11 @@ def overlay_img_with_xml(image_path: Path, xml_path: Path, output_path: Path):
 
 
 def get_polygons_from_xml(xml_path: Path):
-    ns = '{http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15}'
+    patt = re.compile('\{.*\}')
     # load xml
     tree = ET.parse(str(xml_path))
     root = tree.getroot()
+    ns = patt.match(root.tag).group()
     page_part = root[1]
     polygons = []
     # parse out the polygons
